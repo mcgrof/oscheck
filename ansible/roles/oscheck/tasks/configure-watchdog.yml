@@ -7,5 +7,13 @@
   template:
     src: watchdog.conf.j2
     dest: /etc/watchdog.conf
-  notify: restart watchdog daemon
   tags: [ 'watchdog', 'config' ]
+
+- name: Restart watchdog
+  become: yes
+  become_flags: 'su - -c'
+  become_method: sudo
+  tags: [ 'watchdog', 'config' ]
+  service:
+    name: watchdog
+    state: restarted
