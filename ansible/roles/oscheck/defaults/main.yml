@@ -26,32 +26,13 @@ fstests_data_target: "/var/lib/xfstests/"
 
 oscheck_admin: "devnull@kernel.org"
 
-# defaults file for ssmtp - modified kbrebanov.ssmtp
-
-ssmtp_root: postmaster
-ssmtp_mailhub_server: "smtp.gmail.com"
-ssmtp_mailhub_port: "587"
-ssmtp_mailhub: "{{ ssmtp_mailhub_server }}:{{ ssmtp_mailhub_port }}"
-ssmtp_rewrite_domain: "{{ ansible_domain }}"
-ssmtp_hostname: "{{ ansible_hostname }}"
-ssmtp_from_live_override: 'yes'
-ssmtp_auth_user: 'foo@gmail.com'
-smtpp_outgoing_address: 'foo@gmail.com'
-ssmtp_auth_pass: 'mysuperd00perPassword'
-ssmtp_auth_method: ''
-ssmtp_use_tls: "yes"
-ssmtp_use_starttls: "yes"
-ssmtp_local_account: "{{ data_user }}"
-
-ssmtp_revaliases:
-  - local_account: root
-    outgoing_address: "{{ smtpp_outgoing_address }}"
-    mailhub: "{{ ssmtp_mailhub_server }}"
-    port: "{{ ssmtp_mailhub_port }}"
-  - local_account: "{{ ssmtp_local_account }}"
-    outgoing_address: "{{ smtpp_outgoing_address }}"
-    mailhub: "{{ ssmtp_mailhub_server }}"
-    port: "{{ ssmtp_mailhub_port }}"
+postfix_relayhost: "smtp.gmail.com"
+postfix_relayport: "587"
+postfix_mailhub: "{{ postfix_mailhub_server }}:{{ postfix_mailhub_port }}"
+postfix_hostname: "{{ ansible_hostname }}"
+postfix_domain: "{{ ansible_domain }}"
+postfix_auth_user: 'foo@gmail.com'
+postfix_auth_pass: 'mysuperd00perPassword'
 
 # defaults file for the watchdog - whiskerlabs.watchdog
 #

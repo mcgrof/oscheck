@@ -19,7 +19,7 @@ data_fs_opts: "-L {{ data_label }}"
 # We end up just using loopback devices for the fstests TEST_DEV and
 # SCRATCH_DEV_POOL, refer to oscheck/example.config for details.  So we just
 # need *one* large disk for to put sparse/truncated files into.
-truncated_device: "/dev/nvme0n2"
+truncated_device: "/dev/nvme2n1"
 truncated_path: "/media/truncated"
 truncated_fstype: "xfs"
 truncated_label: "truncated"

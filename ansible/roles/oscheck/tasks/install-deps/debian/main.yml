@@ -1,31 +1,37 @@
 ---
-# Install dependenciesfor oscheck on Debian
-- name: Set up apt for Debian testing/unstable
+# Install dependencies for oscheck on Debian
+
+- name: Set up apt for Debian testing
   become: yes
   become_method: sudo
   template:
-    src: debian/sources.list.testing-unstable
+    src: debian/sources.list.testing
     dest: /etc/apt/sources.list
   tags: [ 'apt', 'config' ]
 
-- name: Set pinning preference for debian testing over unstable
+# We have this as old versions of this ansible role added this file
+# and its own set of preferences to prefer unstable over testing so we
+# can install ssmpt. But since we have moved away from ssmpt in favor
+# of postfix we no longer need it. It should be safe to kill this file
+# as we are providing all provisioning of the target systems. But later
+# we should not need this.
+- name: Remove old pinning configuration file
   become: yes
   become_method: sudo
-  template:
-    src: debian/apt-preferences
-    dest: /etc/apt/preferences
+  file:
+    path: /etc/apt/preferences
+    state: absent
   tags: [ 'apt', 'config' ]
 
-- name: Install sSMTP packages from Debian unstable
+- name: Install postfix
   become: yes
   become_method: sudo
   apt:
     name:
-      - ssmtp
-    default_release: unstable
+      - postfix
     state: latest
     update_cache: yes
-  tags: [ 'ssmtp', 'deps' ]
+  tags: [ 'postfix', 'deps' ]
 
 - name: Install bsd-mailx to test mail settings
   become: yes
@@ -37,13 +43,12 @@
     update_cache: yes
   tags: [ 'bsd-mailx', 'deps' ]
 
-- name: Install watchdog package from Debian unstable
+- name: Install watchdog package
   become: yes
   become_method: sudo
   apt:
     name:
       - watchdog
-    default_release: unstable
     state: latest
     update_cache: yes
   tags: [ 'watchdog', 'deps' ]
