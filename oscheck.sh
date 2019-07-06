@@ -845,7 +845,7 @@ oscheck_run_sections()
 		oscheck_count_check
 		oscheck_verify_intented_expunges $SECTION
 
-		OSCHECK_CMD="./check -s ${SECTION} $_SKIP_GROUPS $EXPUNGE_FLAGS $CHECK_ARGS"
+		OSCHECK_CMD="./check -s ${SECTION} -R xunit $_SKIP_GROUPS $EXPUNGE_FLAGS $CHECK_ARGS"
 		oscheck_run_cmd
 	done
 }
