@@ -73,7 +73,7 @@
   args:
     chdir: "{{ fstests_data_target }}"
   when:
-    - oscheck_run_tests is true
+    - oscheck_run_tests == true
 
 - name: Run fstests using oscheck.sh
   tags: [ 'oscheck', 'fstests', 'fstests', 'run_tests']
@@ -84,4 +84,4 @@
   args:
     chdir: "{{ fstests_data_target }}"
   when:
-    - oscheck_run_tests is true
+    - oscheck_run_tests == true
