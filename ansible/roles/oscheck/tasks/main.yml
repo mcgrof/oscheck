@@ -15,7 +15,6 @@
     repo: "{{ oscheck_git }}"
     dest: "{{ oscheck_data }}"
   tags: [ 'oscheck', 'install', 'git']
-  register: oscheck_cloned
 
 - name: Install oscheck as root
   become: yes
@@ -27,8 +26,6 @@
   tags: [ 'oscheck', 'install', 'root']
   args:
     chdir: "{{ oscheck_data }}"
-  register: install_oscheck
-  when: oscheck_cloned is success
 - debug: var=install_oscheck.stdout_lines
 - debug: var=install_oscheck.delta
 
@@ -46,13 +43,11 @@
   tags: [ 'oscheck', 'deps', 'shell']
   args:
     chdir: "{{ oscheck_data }}"
-  when: oscheck_cloned is success
 
 - name: git clone fstests
   git:
     repo: "{{ fstests_git }}"
     dest: "{{ fstests_data }}"
-  register: fstests_clone
   tags: [ 'oscheck', 'git', 'fstests']
 
 - name: Build fstests
@@ -61,8 +56,6 @@
     chdir: "{{ fstests_data }}"
     params:
       NUM_THREADS: "{{ make_num_jobs }}"
-  register: fstests_build
-  when: fstests_clone is success
 - debug: var=fstests_build.stdout_lines
 
 - name: Install fstests
@@ -73,8 +66,6 @@
   tags: [ 'oscheck', 'fstests', 'install', 'root']
   args:
     chdir: "{{ fstests_data }}"
-  register: fstests_build_install
-  when: fstests_build is success
 
 - name: Generate truncated disks using oscheck's gendisk.sh
   tags: [ 'oscheck', 'fstests', 'fstests', 'run_tests', 'gendisks' ]
@@ -84,11 +75,8 @@
   command: "./gendisks.sh -d -m"
   args:
     chdir: "{{ fstests_data_target }}"
-  register: gendisks
   when:
-    - install_oscheck is success
     - oscheck_run_tests is true
-    - fstests_build_install is success
 
 - name: Run fstests using oscheck.sh
   tags: [ 'oscheck', 'fstests', 'fstests', 'run_tests']
@@ -101,4 +89,3 @@
   register: out
   when:
     - oscheck_run_tests is true
-    - gendisks is success
