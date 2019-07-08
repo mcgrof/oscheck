@@ -2,3 +2,6 @@
 
 # You can override role specific stuff on these
 ansible/roles/*/vars/main.yml
+
+roles/oscheck/vars/main.yml
+extra_vars.yml
