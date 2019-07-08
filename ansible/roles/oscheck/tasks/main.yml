@@ -26,8 +26,6 @@
   tags: [ 'oscheck', 'install', 'root']
   args:
     chdir: "{{ oscheck_data }}"
-- debug: var=install_oscheck.stdout_lines
-- debug: var=install_oscheck.delta
 
 # XXX: port the below to the above ansible targets
 # This is complete now for Debian. Other distros need
@@ -56,7 +54,6 @@
     chdir: "{{ fstests_data }}"
     params:
       NUM_THREADS: "{{ make_num_jobs }}"
-- debug: var=fstests_build.stdout_lines
 
 - name: Install fstests
   become: yes
@@ -86,6 +83,5 @@
   command: "./oscheck.sh"
   args:
     chdir: "{{ fstests_data_target }}"
-  register: out
   when:
     - oscheck_run_tests is true
