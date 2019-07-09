@@ -65,7 +65,7 @@
     chdir: "{{ fstests_data }}"
 
 - name: Generate truncated disks using oscheck's gendisk.sh
-  tags: [ 'oscheck', 'fstests', 'fstests', 'run_tests', 'gendisks' ]
+  tags: [ 'oscheck', 'fstests', 'run_tests', 'gendisks' ]
   become: yes
   become_flags: 'su - -c'
   become_method: sudo
@@ -76,11 +76,13 @@
     - oscheck_run_tests == true
 
 - name: Run fstests using oscheck.sh
-  tags: [ 'oscheck', 'fstests', 'fstests', 'run_tests']
+  vars:
+    section: "{{ ansible_hostname | regex_replace('oscheck-') | regex_replace('-', '_') }}"
+  tags: [ 'oscheck', 'fstests', 'fstests', 'run_tests' ]
   become: yes
   become_flags: 'su - -c'
   become_method: sudo
-  command: "./oscheck.sh"
+  command: "./oscheck.sh --test-section {{ section }}"
   args:
     chdir: "{{ fstests_data_target }}"
   when:
