@@ -86,7 +86,7 @@
 - name: Run fstests using oscheck.sh
   vars:
     section: "{{ ansible_hostname | regex_replace('oscheck-') | regex_replace('-', '_') }}"
-  tags: [ 'oscheck', 'fstests', 'fstests', 'run_tests' ]
+  tags: [ 'oscheck', 'fstests', 'run_tests' ]
   become: yes
   become_flags: 'su - -c'
   become_method: sudo
@@ -95,6 +95,12 @@
     chdir: "{{ fstests_data_target }}"
   when:
     - oscheck_run_tests == true
+
+- name: Reboot system after test
+  tags: [ 'oscheck', 'fstests', 'run_tests', 'reboot' ]
+  become: yes
+  become_method: sudo
+  reboot:
 
 - name: Look for xunit results files
   tags: [ 'oscheck', 'fstests', 'fstests', 'copy_results' ]
