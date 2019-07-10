@@ -64,6 +64,14 @@
   args:
     chdir: "{{ fstests_data }}"
 
+- name: git pull latest oscheck to ensure expunge list is up to date
+  git:
+    repo: "{{ oscheck_git }}"
+    dest: "{{ oscheck_data }}"
+    update: yes
+    version: master
+  tags: [ 'oscheck', 'install', 'git', 'git_update', 'run_tests' ]
+
 - name: Generate truncated disks using oscheck's gendisk.sh
   tags: [ 'oscheck', 'fstests', 'run_tests', 'gendisks' ]
   become: yes
