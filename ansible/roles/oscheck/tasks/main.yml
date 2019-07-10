@@ -87,3 +87,25 @@
     chdir: "{{ fstests_data_target }}"
   when:
     - oscheck_run_tests == true
+
+- name: Look for xunit results files
+  tags: [ 'oscheck', 'fstests', 'fstests', 'copy_results' ]
+  become: yes
+  become_flags: 'su - -c'
+  become_method: sudo
+  find:
+    paths: "{{ fstests_data_target }}"
+    recurse: yes
+    patterns: "*.xml"
+  register: xunit_files
+
+- name: Copy xunit results files
+  tags: [ 'oscheck', 'fstests', 'fstests', 'copy_results' ]
+  become: yes
+  become_flags: 'su - -c'
+  become_method: sudo
+  fetch:
+    src: "{{ item.path }}"
+    #dest: "{{ item.path | regex_replace(fstests_data_target | regex_escape()) | regex_replace('/', '_') }}"
+    dest: "results/"
+  with_items: "{{ xunit_files.files }}"

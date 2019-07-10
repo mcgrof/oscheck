@@ -255,6 +255,7 @@ You'll need:
     you can then use oscheck.sh --install-deps to install fstests's dependencies.
   * A test system
   * Use existing spare disk or create a qcow2 image for testing
+  * To be able to parse xunit results file: pip install junitparser
 
 ## Install
 
