@@ -5,3 +5,4 @@ ansible/roles/*/vars/main.yml
 
 roles/oscheck/vars/main.yml
 extra_vars.yml
+python/*.pyc
