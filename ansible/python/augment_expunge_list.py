@@ -1,17 +1,24 @@
 #!/usr/bin/python
 
-# Generate expunge list based on results directory
+# Augment expunge list based on results directory
 #
-# Given a directory path it finds all test failures and produces an
-# expunge list you can use with fstests's check.sh -E option to let you
-# then skip those tests.
+# Given a directory path it finds all test failures and augments your
+# existing expunge list you can use with oscheck. If a failure was
+# present it will not be added again. If you had no expunge files,
+# they will be created for you.
 
 import argparse
 import os
 import sys
 
+def append_line(output_file, test_failure_line):
+    # We want to now add entries like generic/xxx where xxx are digits
+    output = open(output_file, "a+")
+    output.write("%s\n" % test_failure_line)
+    output.close()
+
 def main():
-    parser = argparse.ArgumentParser(description='generate_expunge_list')
+    parser = argparse.ArgumentParser(description='Augments expunge list for oscheck')
     parser.add_argument('filesystem', metavar='<filesystem name>', type=str,
                         help='filesystem which was tested')
     parser.add_argument('results', metavar='<directory with results>', type=str,
@@ -33,7 +40,8 @@ def main():
             if not f.endswith('.bad'):
                 continue
 
-            # f may be results/oscheck-xfs/4.19.0-4-amd64/xfs/generic/091.out.bad
+            # f may be results/oscheck-xfs/4.19.0-4-amd64/xfs/generic/xxx.out.bad
+            # where xxx are digits
             bad_file_list = f.split("/")
             bad_file_list_len = len(bad_file_list) - 1
             bad_file = bad_file_list[bad_file_list_len]
@@ -44,7 +52,7 @@ def main():
             bad_file_parts = bad_file.split(".")
             bad_file_part_len = len(bad_file_parts) - 1
             bad_file_test_number = bad_file_parts[bad_file_part_len - 2]
-            # This is like for example generic/091
+            # This is like for example generic/xxx where xxx are digits
             test_failure_line = test_type + '/' + bad_file_test_number
 
             # now to stuff this into expunge files such as:
@@ -56,10 +64,21 @@ def main():
             if not os.path.isdir(output_dir):
                 os.makedirs(output_dir)
 
-            # We want to now add entries like generic/xxx where xxx is a digit
-            output = open(output_file, "a+")
-            output.write("%s\n" % test_failure_line)
-            output.close()
+            if not os.path.isfile(output_file):
+                sys.stdout.write("%s %s new failure found file was empty\n" % (section, test_failure_line))
+                append_line(output_file, test_failure_line)
+            else:
+                existing_file = open(output_file, 'r')
+                all_lines = existing_file.readlines()
+                existing_file.close()
+                found = False
+                for line in all_lines:
+                    if test_failure_line in line:
+                        found = True
+                        break
+                if not found:
+                    sys.stdout.write("%s %s new failure found\n" % (section, test_failure_line))
+                    append_line(output_file, test_failure_line)
 
 if __name__ == '__main__':
     main()

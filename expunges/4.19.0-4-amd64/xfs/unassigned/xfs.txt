@@ -18,3 +18,4 @@ xfs/495
 xfs/499
 xfs/500
 xfs/504
+generic/529
