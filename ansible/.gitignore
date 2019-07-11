@@ -6,3 +6,6 @@ ansible/roles/*/vars/main.yml
 roles/oscheck/vars/main.yml
 extra_vars.yml
 python/*.pyc
+results/
+xunit_results.txt
+bad_results.txt
