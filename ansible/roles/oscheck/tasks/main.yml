@@ -72,6 +72,12 @@
     version: master
   tags: [ 'oscheck', 'install', 'git', 'git_update', 'run_tests' ]
 
+- name: Clear out old results directory
+  file:
+    state: absent
+    path: "{{ fstests_data_target }}/results/"
+  tags: [ 'oscheck', 'fstests', 'run_tests', 'clean_results' ]
+
 - name: Generate truncated disks using oscheck's gendisk.sh
   tags: [ 'oscheck', 'fstests', 'run_tests', 'gendisks' ]
   become: yes
@@ -103,7 +109,7 @@
   reboot:
 
 - name: Look for xunit results files
-  tags: [ 'oscheck', 'fstests', 'fstests', 'copy_results' ]
+  tags: [ 'oscheck', 'fstests', 'copy_results', 'xunit' ]
   become: yes
   become_flags: 'su - -c'
   become_method: sudo
@@ -114,7 +120,7 @@
   register: xunit_files
 
 - name: Copy xunit results files
-  tags: [ 'oscheck', 'fstests', 'fstests', 'copy_results' ]
+  tags: [ 'oscheck', 'fstests', 'copy_results', 'xunit' ]
   become: yes
   become_flags: 'su - -c'
   become_method: sudo
@@ -123,3 +129,25 @@
     dest: "{{ item.path | regex_replace(fstests_data_target | regex_escape()) }}"
     flat: yes
   with_items: "{{ xunit_files.files }}"
+
+- name: Look for tests which failed
+  tags: [ 'oscheck', 'fstests', 'copy_results', 'failed_tests' ]
+  become: yes
+  become_flags: 'su - -c'
+  become_method: sudo
+  find:
+    paths: "{{ fstests_data_target }}"
+    recurse: yes
+    patterns: "*.bad"
+  register: failed_tests
+
+- name: Copy data for tests that failed
+  tags: [ 'oscheck', 'fstests', 'copy_results', 'failed_tests' ]
+  become: yes
+  become_flags: 'su - -c'
+  become_method: sudo
+  fetch:
+    src: "{{ item.path }}"
+    dest: "{{ item.path | regex_replace(fstests_data_target | regex_escape()) }}"
+    flat: yes
+  with_items: "{{ failed_tests.files }}"
