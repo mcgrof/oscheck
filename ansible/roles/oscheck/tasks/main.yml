@@ -105,11 +105,10 @@
   when:
     - oscheck_run_tests == true
 
-- name: Reboot system after test
-  tags: [ 'oscheck', 'fstests', 'run_tests', 'reboot' ]
-  become: yes
-  become_method: sudo
-  reboot:
+- name: Clean up our localhost results directory and files
+  local_action: "shell rm -rf results/ xunit_results.txt bad_results.txt"
+  tags: [ 'oscheck', 'fstests', 'copy_results', 'clean_local_results' ]
+  run_once: true
 
 - name: Look for xunit results files
   tags: [ 'oscheck', 'fstests', 'copy_results', 'xunit' ]
@@ -154,6 +153,12 @@
     dest: "{{ item.path | regex_replace(fstests_data_target | regex_escape()) }}"
     flat: yes
   with_items: "{{ failed_tests.files }}"
+
+- name: Reboot system after test
+  tags: [ 'oscheck', 'fstests', 'run_tests', 'reboot' ]
+  become: yes
+  become_method: sudo
+  reboot:
 
 - name: Print fstests results to xunit_results.txt on localhost
   local_action: "shell ./python/gen_results_summary --results_file result.xml  --print_section --output_file xunit_results.txt results"
