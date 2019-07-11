@@ -73,6 +73,9 @@
   tags: [ 'oscheck', 'install', 'git', 'git_update', 'run_tests' ]
 
 - name: Clear out old results directory
+  become: yes
+  become_flags: 'su - -c'
+  become_method: sudo
   file:
     state: absent
     path: "{{ fstests_data_target }}/results/"
