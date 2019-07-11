@@ -154,3 +154,8 @@
     dest: "{{ item.path | regex_replace(fstests_data_target | regex_escape()) }}"
     flat: yes
   with_items: "{{ failed_tests.files }}"
+
+- name: Print fstests results to xunit_results.txt on localhost
+  local_action: "shell ./python/gen_results_summary --results_file result.xml  --print_section --output_file xunit_results.txt results"
+  tags: [ 'oscheck', 'fstests', 'copy_results', 'print_results' ]
+  run_once: true
