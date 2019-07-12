@@ -564,7 +564,7 @@ trap "_cleanup; exit \$status" 0 1 2 3 15
 SKIP_GROUPS=
 
 if [ -z "$FSTYP" ]; then
-	FSTYP=btrfs
+	FSTYP=xfs
 fi
 
 # queue_tests - a way to group test to run with a custom section
