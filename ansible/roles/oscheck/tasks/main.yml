@@ -92,14 +92,14 @@
   when:
     - oscheck_run_tests == true
 
-- name: Run fstests using oscheck.sh
+- name: Run fstests using oscheck.sh {{ oscheck_extra_args }}
   vars:
     section: "{{ ansible_hostname | regex_replace('oscheck-') | regex_replace('-', '_') }}"
   tags: [ 'oscheck', 'fstests', 'run_tests' ]
   become: yes
   become_flags: 'su - -c'
   become_method: sudo
-  command: "./oscheck.sh --test-section {{ section }}"
+  command: "./oscheck.sh --test-section {{ section }} {{ oscheck_extra_args }}"
   args:
     chdir: "{{ fstests_data_target }}"
   when:
