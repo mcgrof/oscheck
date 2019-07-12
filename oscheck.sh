@@ -55,6 +55,10 @@ oscheck_usage()
 	echo "--is-distro     - Only checks if the kernel detected is a distro kernel or not, does not run any tests"
 	echo "--custom-kernel - Only checks if the kernel detected is a distro kernel or not, does not run any tests"
 	echo "--verbose       - Be verbose when debugging"
+	echo ""
+	echo "Note that all parameters which we do not understand we'll just"
+	echo "pass long to check.sh so it can use them. So calling oscheck.sh -g quick"
+	echo "will call check.sh -g quick."
 }
 
 copy_to_check_arg()
