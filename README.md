@@ -10,13 +10,31 @@ with whatever your virtualization / bare metal / cloud provisioning
 environment easily. The vagrant / terraform setup is completely
 optional, however ansible *is* used to run oscheck across all hosts.
 
-There are five parts to the long terms ideals for oscheck:
+The nuts and bolts of deploying vagrant / terraform / and ansible to
+get Linux through a git tree using a tag, compile Linux, and boot into
+that kernel are all things which can obviously be shared with other projects.
+As such this part of oscheck is now its own independent project,
+[kdevops](https://gitlab.com/mcgrof/kdevops). At this point in time this
+just means the vagrant / terraform directories are currently mirrored on
+both projects as-is, as well as the ansible roles for bootlinux and installing
+generic dependencies. A long term goal of kdevops is to eventually modularize
+it so that oscheck does not have to copy all of the code present on
+[kdevops](https://gitlab.com/mcgrof/kdevops). For now all commits which
+touch vagrant / terraform / the bootlinxu ansible role can be shared between
+projects.
 
-1. Provisioning required virtual hosts for fstests purposes (filesystem specific)
-2. Provisioning requirements for building fstests and installing oscheck
-3. Running oscheck
-4. Collecting results
-5. Processing results
+There are seven parts to the long terms ideals for oscheck:
+
+1. Provisioning required virtual hosts for fstests purposes (filesystem
+   specific). This is now folded into
+   [kdevops](https://gitlab.com/mcgrof/kdevops)
+2. Getting Linux, compiling and booting into it, also now folded into
+   [kdevops](https://gitlab.com/mcgrof/kdevops).
+3. Provisioning requirements for building fstests and installing oscheck
+4. Running oscheck
+5. Collecting results
+6. Processing results
+7. Updating expunge lists to detect regressions
 
 Vagrant or terraform can optionally be used for the first part. Vagrant and
 terraform are also used to kick off ansible later for the second part of the
@@ -29,30 +47,54 @@ the distro you are testing has the respective expunge files set for the
 filesystem you are testing. This should let you run fstests against a custom
 kernel, for example, to ensure you don't introduce regressions for changes.
 
-Collecting results is next. This is not implemented yet. Its still all manual.
-Processing results is also manual, and you can see the results of this effort
-on the respective expunge lists for each distro on oscheck. Ideally each
-failure is properly tracked with a bz# (redhat) bsc# (suse) or a respective
-kernel.org bugzilla (kz#) entry. It is expected someone should be working on
-these issues.
+Collecting results is next. oscheck uses xunit output files, but also processes
+test `*.bad` files to determine where issues are found. A summary of results
+by looking at xunit files for all sections run can be found in the file
+`ansible/xunit_results.txt`. A summary of results by looking at all `*.bad`
+files can be found on `bad_results.txt`.
 
-What works?
+The last step is to update the expunge list for you kernel, this done
+automatically, so at the end of the `copy_results` tag for ansible you'd
+end able to just run the following command to determine if you have found
+regressions on the kernel you are testing:
+
+```
+git diff
+```
+
+Ideally each failure is properly tracked with a bz# (redhat) bsc# (suse) or a
+respective kernel.org bugzilla (kz#) entry. It is expected someone should be
+working on these issues.
+
+## Features
+
+What works:
 
   * Full vagrant provisioning
-  * Optionally allowing vagrant to also run oscheck to run a full fstests run
   * Initial terraform provisioning on different cloud providers
+  * Optionally allowing vagrant to also run oscheck to run a full fstests run
+  * Running ansible to get any Linux git repo, using a tag, compiling Linux,
+    and booting into it
   * Running ansible to install dependencies on debian
   * Running oscheck to install dependencies on other distros
   * Running ansible for running oscheck or building a custom kernel and booting into it
   * Running oscheck with a set of expunge files
+  * Collecting results
+  * Processing them
+  * Giving you a convenient way to determine if you have any regressions
+
+## TODO
 
 What's missing?
 
   * Hooking up terraform with ansible. For this I am considering using [the terraform ansible module](https://registry.terraform.io/modules/radekg/ansible/provisioner/2.2.0).
-  * Storage setup when terraform is used in a consistent way for both /data and /media/truncated drives we can use for fstests. Right now the oscheck ansible playbook relies on at least two nvme drives to be available.
-  * A way to automate getting your vagrant / cloud provider IP address to your ssh config so we can later run with ansible
-  * Processing results -- we should use xunit, ted has some scripts for this already
-  * Displaying results: well... hopefully someone will volunteer for this :)
+  * Storage setup when terraform is used in a consistent way for both /data and
+    /media/truncated drives we can use for fstests. Right now the oscheck
+    ansible playbook relies on at least two nvme drives to be available. This
+    should be possible to just modify the tag used for the target label we
+    look for to set up the truncated files on top of.
+  * A way to automate getting your vagrant / cloud provider IP address to your
+    ssh config so we can later run with ansible
 
 By default Debian testing is used where possible. Support for other
 distributions has been added, however upkeeping it is up to the folks interested
@@ -137,16 +179,86 @@ terraform apply
 
 ## Running ansible
 
-Before running ansible make sure you can ssh into the hosts listed on ansible/hosts.
+Before running ansible make sure you can ssh into the hosts listed on
+ansible/hosts.
+
+Ansible is *the* main supported mechanism by which we test with fstests.
+Although using oscheck on bare metal is possible, you won't be parallelizing
+your efforts if you do. If you use different virtual hosts for different
+fstests sections, each section testing one specific way to configure your
+filesystem, you could simply run all fstests on all hosts in parallel.
+Even if you were using baremetal you could just ues ansible on a series of
+bare metal nodes to also control them to parallelize your efforts.
+
+Running oscheck.sh or check.sh manually therefore is expected only if
+you need to test one specific test.
+
+This means we have written roles for each main task. The aspect of doing a git
+clone Linux, compiling Linux, booting into Linux is a generic concept which
+obviously others can also used, as such this aspect of this project is now
+shared with [kdevops](https://gitlab.com/mcgrof/kdevops) and it is expected
+that we'd take advantage of it somehow later once its modularlized.
 
 You'd use ansible to provision fstests and oscheck's dependencies, and install
-all you need to get going with oscheck. You can also use it to *run* oscheck
-in parallel on your shiny systems. Later we'll add playbooks to collect
-results and then process them.
+all you need to get going with oscheck. You can also use it to optionally
+compile Linux, and install it. And, you can also use it to *run* oscheck in
+parallel on your shiny systems. Ansible is also used to collect results and
+then process them, and finally show you regressions.
+
+### Compiling your own kernel
+
+Say you want to get a git repo of Linux, compile Linux, and reboot into it:
+
+```bash
+cd ansible/
+ansible-playbook -i hosts bootlinux.yml
+```
+
+Be sure you are using a correct configuration. YMMV.
+
+### Running oscheck
+
+To run oscheck to test with fstests after you have provisioned your
+systmes and they are up and accessible via ssh:
 
 ```bash
 cd ansible/
 ansible-playbook -i hosts oscheck.yml
+```
+
+Say you just want to run the tests again:
+
+```
+cd ansible
+ansible-playbook -i hosts --tags run_tests oscheck.yml
+```
+
+Say you just want to collect result:
+
+```
+ansible-playbook -i hosts --tags collect_results oscheck.yml
+```
+
+If you detect your nodes are hosed.. try to reset them on your hypervisor.
+For instance consider using this if on KVM:
+
+```
+sudo virsh list
+sudo virsh reset $name_of_vm_as_per_above
+```
+
+But you can also just reboot them manually, this may not work if the
+system has crashed:
+
+```
+ansible-playbook -i hosts --tags reboot oscheck.yml
+```
+
+Need console access:
+
+```
+sudo virsh list
+sudo virsh console $name_of_vm_as_per_above
 ```
 
 ### Running oscheck with ansible to do a full fstests run
@@ -159,17 +271,21 @@ $ cat ansible/extra_vars.yml
 oscheck_run_tests: true
 ```
 
+By default oscheck uses: `check.sh -g quick` to be able to test things
+fast. To do a full run have this set:
+
+```bash
+$ cat ansible/extra_vars.yml
+---
+oscheck_run_tests: true
+oscheck_extra_args: ""
+```
+
+To just run the tests:
+
 ```bash
 cd ansible/
 ansible-playbook -i hosts oscheck.yml --tags "run_tests"
-```
-
-### Testinga  custom kernel
-
-Let's say you have a custom kernel you want to test:
-
-```bash
-ansible-playbook -i hosts bootlinux.yml
 ```
 
 # oscheck's primary objective: track a baseline for XFS on latest Linux and Linux stable kernels
