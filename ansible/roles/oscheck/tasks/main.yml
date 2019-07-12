@@ -72,6 +72,12 @@
     version: master
   tags: [ 'oscheck', 'install', 'git', 'git_update', 'run_tests' ]
 
+- name: Reboot system before our test so we know everything is sane
+  tags: [ 'oscheck', 'fstests', 'run_tests', 'reboot' ]
+  become: yes
+  become_method: sudo
+  reboot:
+
 - name: Clear out old results directory
   become: yes
   become_flags: 'su - -c'
@@ -153,12 +159,6 @@
     dest: "{{ item.path | regex_replace(fstests_data_target | regex_escape()) }}"
     flat: yes
   with_items: "{{ failed_tests.files }}"
-
-- name: Reboot system after test
-  tags: [ 'oscheck', 'fstests', 'run_tests', 'reboot' ]
-  become: yes
-  become_method: sudo
-  reboot:
 
 - name: Print fstests results to xunit_results.txt on localhost
   local_action: "shell ./python/gen_results_summary --results_file result.xml  --print_section --output_file xunit_results.txt results"
