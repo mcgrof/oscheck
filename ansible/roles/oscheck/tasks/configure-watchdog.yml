@@ -13,6 +13,7 @@
   become: yes
   become_flags: 'su - -c'
   become_method: sudo
+  ignore_errors: yes
   tags: [ 'watchdog', 'config' ]
   service:
     name: watchdog
