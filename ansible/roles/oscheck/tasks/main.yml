@@ -107,6 +107,7 @@
   become_method: sudo
   command: "./oscheck.sh --test-section {{ section }} {{ oscheck_extra_args }}"
   ignore_errors: yes
+  no_log: True
   args:
     chdir: "{{ fstests_data_target }}"
   when:
@@ -133,6 +134,7 @@
   become: yes
   become_flags: 'su - -c'
   become_method: sudo
+  no_log: True
   fetch:
     src: "{{ item.path }}"
     dest: "{{ item.path | regex_replace(fstests_data_target | regex_escape()) }}"
@@ -144,6 +146,7 @@
   become: yes
   become_flags: 'su - -c'
   become_method: sudo
+  no_log: True
   find:
     paths: "{{ fstests_data_target }}"
     recurse: yes
@@ -155,6 +158,7 @@
   become: yes
   become_flags: 'su - -c'
   become_method: sudo
+  no_log: True
   fetch:
     src: "{{ item.path }}"
     dest: "{{ item.path | regex_replace(fstests_data_target | regex_escape()) }}"

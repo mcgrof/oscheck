@@ -10,6 +10,10 @@
 import argparse
 import os
 import sys
+import subprocess
+
+oscheck_ansible_python_dir = os.path.dirname(os.path.abspath(__file__))
+oscheck_sort_expunge = oscheck_ansible_python_dir + "/../../scripts/sort-expunges.sh"
 
 def append_line(output_file, test_failure_line):
     # We want to now add entries like generic/xxx where xxx are digits
@@ -26,6 +30,8 @@ def main():
     parser.add_argument('outputdir', metavar='<output directory>', type=str,
                         help='The directory where to generate the expunge lists to')
     args = parser.parse_args()
+
+    expunge_kernel_dir = ""
 
     all_files = os.listdir(args.results)
 
@@ -57,8 +63,8 @@ def main():
 
             # now to stuff this into expunge files such as:
             # path/4.19.17/xfs/unassigned/xfs_nocrc.txt
-            output_dir = args.outputdir + '/' + kernel + '/' + args.filesystem + '/'
-            output_dir += 'unassigned/'
+            expunge_kernel_dir = args.outputdir + '/' + kernel + '/' + args.filesystem + '/'
+            output_dir = expunge_kernel_dir + 'unassigned/'
             output_file = output_dir + section + '.txt'
 
             if not os.path.isdir(output_dir):
@@ -79,6 +85,11 @@ def main():
                 if not found:
                     sys.stdout.write("%s %s new failure found\n" % (section, test_failure_line))
                     append_line(output_file, test_failure_line)
+
+    if expunge_kernel_dir != "":
+        sys.stdout.write("Sorting %s ...\n" % (expunge_kernel_dir))
+        sys.stdout.write("Running %s %s...\n" % (oscheck_sort_expunge, expunge_kernel_dir))
+        subprocess.call([oscheck_sort_expunge, expunge_kernel_dir])
 
 if __name__ == '__main__':
     main()
