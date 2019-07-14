@@ -71,3 +71,12 @@
       chmod 755 {{ dev_bash_config_root }}
     fi
   when: dev_bash_config_file_copied_root is success
+
+- name: Check file permissions
+  become: yes
+  become_method: sudo
+  file:
+    path: "{{ data_path }}"
+    owner: "{{ data_user }}"
+    group: "{{ data_group }}"
+  tags: [ 'devconfig', 'setup', 'filepermissions' ]
