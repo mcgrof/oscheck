@@ -38,7 +38,7 @@
   become_flags: 'su - -c'
   become_method: sudo
   command: "./oscheck.sh --install-deps"
-  tags: [ 'oscheck', 'deps', 'shell']
+  tags: [ 'oscheck', 'install', 'deps', 'shell']
   args:
     chdir: "{{ oscheck_data }}"
 
