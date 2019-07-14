@@ -54,6 +54,7 @@ oscheck_usage()
 	echo "--install-deps  - Install fstests build dependencies"
 	echo "--is-distro     - Only checks if the kernel detected is a distro kernel or not, does not run any tests"
 	echo "--custom-kernel - Only checks if the kernel detected is a distro kernel or not, does not run any tests"
+	echo "--fast-tests    - Run oscheck's interpretation of what fast test are"
 	echo "--verbose       - Be verbose when debugging"
 	echo ""
 	echo "Note that all parameters which we do not understand we'll just"
@@ -111,6 +112,10 @@ parse_args()
 			;;
 		--custom-kernel)
 			OSCHECK_CUSTOM_KERNEL="true"
+			shift
+			;;
+		--fast-tests)
+			FAST_TEST="y"
 			shift
 			;;
 		--help)

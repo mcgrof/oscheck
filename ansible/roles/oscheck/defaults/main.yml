@@ -20,8 +20,9 @@ oscheck_git: "https://gitlab.com/mcgrof/oscheck.git"
 oscheck_data: "{{ data_path }}/oscheck"
 oscheck_data_target: "/var/lib/xfstests/"
 
-# Make this empty if you want to run more tests.
-oscheck_extra_args: "-g quick"
+# Ror instance you can use "-g quick" but note that this may produce
+# not results as all quick tests may be expunded.
+oscheck_extra_args: ""
 
 fstests_git: "https://git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git"
 fstests_data: "{{ data_path }}/xfstests"

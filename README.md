@@ -270,18 +270,29 @@ $ cat ansible/extra_vars.yml
 ---
 oscheck_run_tests: true
 ```
+#### Quick tests
 
-By default oscheck uses: `check.sh -g quick` to be able to test things
-fast. To do a full run have this set:
+By default oscheck uses runs all tests except those present on the expunge
+list. Making oscheck run `check.sh -g quick` is possible as follows:
 
 ```bash
 $ cat ansible/extra_vars.yml
 ---
 oscheck_run_tests: true
-oscheck_extra_args: ""
+oscheck_extra_args: "-g quick"
 ```
 
-To just run the tests:
+However, experience shows currently no tests are run with. To use oscheck's
+own interpetation of what a fast test are, you can use:
+
+```bash
+$ cat ansible/extra_vars.yml
+---
+oscheck_run_tests: true
+oscheck_prefix_vars: "--fast-tests"
+```
+
+This will enable the `FAST_TEST` option of oscheck.sh.
 
 ```bash
 cd ansible/
