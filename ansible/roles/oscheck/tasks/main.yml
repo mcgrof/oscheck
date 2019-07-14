@@ -106,6 +106,7 @@
   become_flags: 'su - -c'
   become_method: sudo
   command: "./oscheck.sh --test-section {{ section }} {{ oscheck_extra_args }}"
+  ignore_errors: yes
   args:
     chdir: "{{ fstests_data_target }}"
   when:
