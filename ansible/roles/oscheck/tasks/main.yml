@@ -134,19 +134,19 @@
   become: yes
   become_flags: 'su - -c'
   become_method: sudo
-  no_log: True
   fetch:
     src: "{{ item.path }}"
     dest: "{{ item.path | regex_replace(fstests_data_target | regex_escape()) }}"
     flat: yes
   with_items: "{{ xunit_files.files }}"
+  loop_control:
+    label: "{{ item.path | regex_replace(fstests_data_target | regex_escape()) }}"
 
 - name: Look for tests which failed
   tags: [ 'oscheck', 'fstests', 'copy_results', 'failed_tests' ]
   become: yes
   become_flags: 'su - -c'
   become_method: sudo
-  no_log: True
   find:
     paths: "{{ fstests_data_target }}"
     recurse: yes
@@ -158,12 +158,13 @@
   become: yes
   become_flags: 'su - -c'
   become_method: sudo
-  no_log: True
   fetch:
     src: "{{ item.path }}"
     dest: "{{ item.path | regex_replace(fstests_data_target | regex_escape()) }}"
     flat: yes
   with_items: "{{ failed_tests.files }}"
+  loop_control:
+    label: "{{ item.path | regex_replace(fstests_data_target | regex_escape()) }}"
 
 - name: Print fstests results to xunit_results.txt on localhost
   local_action: "shell ./python/gen_results_summary --results_file result.xml  --print_section --output_file xunit_results.txt results"
