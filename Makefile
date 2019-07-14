@@ -6,7 +6,7 @@ FSTYP?="xfs"
 TRUNCATE_PATH="/media/truncated"
 
 PROGS := gendisks.sh oscheck.sh naggy-check.sh
-SETUP_FILE := .oschectk-setup
+SETUP_FILE := .oscheck-setup
 
 HOSTNAME := $(shell hostname)
 HOSTNAME_CONFIG := $(HOSTNAME).config
