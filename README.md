@@ -481,7 +481,7 @@ Ensure that the directory matches what you set up for $OSCHECK_TRUNCATE_PATH.
 ## Expunge files
 
 We need a way to express to skip tests to work with a baseline. fstests tends
-to refer to this as "expunging" tests. fstests supports the abilty to specify
+to refer to this as "expunging" tests. fstests supports the ability to specify
 an expunge list as a file, and multiple expunge lists can be used.
 Comments on expunge files are always ignored. The expected format of the
 file is one entry per line, comments after the line are ignored.
