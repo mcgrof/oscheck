@@ -1,6 +1,15 @@
 ---
 # Install dependencies for building linux on Debian
 
+- name: Allow for distro source change / upgrade
+  become: yes
+  become_flags: 'su - -c'
+  become_method: sudo
+  command: "apt-get update  --allow-releaseinfo-change"
+  args:
+    warn: no
+  tags: [ 'linux', 'deps' ]
+
 - name: Update apt cache
   become: yes
   become_method: sudo
