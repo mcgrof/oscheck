@@ -20,6 +20,7 @@ generic/177
 generic/204
 generic/207
 generic/223
+generic/228
 generic/260
 generic/263
 generic/311
@@ -35,6 +36,7 @@ generic/347
 generic/348
 generic/361
 generic/376
+generic/394
 generic/455
 generic/459
 generic/464 # fails after ~40 runs
@@ -49,6 +51,19 @@ generic/502
 generic/510
 generic/512
 generic/520
+generic/526
+generic/527
+generic/529
+generic/534
+generic/535
+generic/536
+generic/537
+generic/538
+generic/547
+generic/552
+generic/553
+generic/554
+generic/557
 shared/002
 shared/298
 xfs/002
@@ -56,6 +71,8 @@ xfs/030
 xfs/033
 xfs/068
 xfs/070
+xfs/104
+xfs/119
 xfs/137
 xfs/138
 xfs/191-input-validation
@@ -65,8 +82,14 @@ xfs/199
 xfs/278
 xfs/291
 xfs/294
+xfs/295
+xfs/297
 xfs/419
 xfs/424
+xfs/449
 xfs/451
 xfs/495
 xfs/499
+xfs/500
+xfs/503
+xfs/504
