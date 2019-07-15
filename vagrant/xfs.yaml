@@ -64,6 +64,20 @@ vagrant_boxes:
     ip: 172.17.8.106
   - name: oscheck-xfs-realtimedev
     ip: 172.17.8.107
+  - name: oscheck-xfs-dev
+    ip: 172.17.8.111
+  - name: oscheck-xfs-nocrc-dev
+    ip: 172.17.8.112
+  - name: oscheck-xfs-nocrc-512-dev
+    ip: 172.17.8.113
+  - name: oscheck-xfs-reflink-dev
+    ip: 172.17.8.114
+  - name: oscheck-xfs-reflink-1024-dev
+    ip: 172.17.8.115
+  - name: oscheck-xfs-logdev-dev
+    ip: 172.17.8.116
+  - name: oscheck-xfs-realtimedev-dev
+    ip: 172.17.8.117
 
 ansible_playbooks:
   # If this file exists you can override any ansible variable there.
@@ -71,4 +85,3 @@ ansible_playbooks:
   extra_vars: "../ansible/extra_vars.yml"
   playbooks:
     - name: "../ansible/dev_config.yml"
-    - name: "../ansible/oscheck.yml"
