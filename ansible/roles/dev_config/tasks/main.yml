@@ -76,6 +76,7 @@
   become: yes
   become_method: sudo
   file:
+    state: directory
     path: "{{ data_path }}"
     owner: "{{ data_user }}"
     group: "{{ data_group }}"
