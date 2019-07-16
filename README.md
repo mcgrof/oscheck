@@ -95,6 +95,26 @@ What's missing?
     look for to set up the truncated files on top of.
   * A way to automate getting your vagrant / cloud provider IP address to your
     ssh config so we can later run with ansible
+  * Provided you have a baseline and a development kernel with a set of
+    of respective hosts, when a delta exists between a baseline kernel and
+    a development kernel implies either regressions or that a fix was made.
+
+    Fixes:
+
+    However, since certain tests require running multiple times before a
+    a failure, the fact that a test runs successfully during one shot fstests
+    run does not imply a test is fixed. To verify fixes then, the only proper
+    way to confirm a fix is to have a new task which can run against an input
+    set of target tests to confirm a regressions. This task for instance would
+    run for a count set number of times, say 1000 times. Only if a test did not
+    fail after this count, would one consider a test fixed. The task could
+    just use naggy-check.sh, which runs a test with a provided set number of
+    counts or can run forever until a failure is detected.
+
+    Regressions:
+
+    We could re-use the same task as to confirm fixes to confirm regressions
+    against the baseline kernel.
 
 By default Debian testing is used where possible. Support for other
 distributions has been added, however upkeeping it is up to the folks interested
