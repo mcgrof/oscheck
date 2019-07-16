@@ -5,7 +5,21 @@
 # Distro agnostic
 - include: tasks/configure-postfix.yml
 - include: tasks/configure-watchdog.yml
-- include: tasks/disk-setup.yml
+
+- include_role:
+    name: create_data_partition
+
+- name: Create {{ truncated_path }} if needed
+  include_role:
+    name: create_partition
+  vars:
+    disk_setup_device: "{{ truncated_device }}"
+    disk_setup_fstype: "{{ truncated_fstype }}"
+    disk_setup_label : "{{ truncated_label }}"
+    disk_setup_fs_opts: "{{ truncated_fs_opts }}"
+    disk_setup_path: "{{ truncated_path }}"
+    disk_setup_user: "{{ data_user }}"
+    disk_setup_group: "{{ data_group }}"
 
   vars:
     oscheck_run_tests: "{{ oscheck_run_tests }}"
