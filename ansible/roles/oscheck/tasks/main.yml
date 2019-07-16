@@ -21,9 +21,6 @@
     disk_setup_user: "{{ data_user }}"
     disk_setup_group: "{{ data_group }}"
 
-  vars:
-    oscheck_run_tests: "{{ oscheck_run_tests }}"
-
 - name: git clone oscheck
   git:
     repo: "{{ oscheck_git }}"
