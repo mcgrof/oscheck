@@ -5,6 +5,7 @@ generic/394
 generic/418
 generic/464 # after ~39 runs
 generic/475 # after ~5-10 runs
+generic/482 # after ~16 runs
 generic/484
 generic/529
 generic/536
