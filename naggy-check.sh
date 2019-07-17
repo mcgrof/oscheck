@@ -56,11 +56,13 @@ if [ "$TESTS" = "" ]; then
 fi
 
 i=0
+
 while true; do
 	FAIL="false"
 	./check -s $SECTION $TESTS
+	RET=$?
 	# Fortunately check will return 1 if any test fails
-	if [ $? -ne 0 ]; then
+	if [ $RET -ne 0 ]; then
 		FAIL="true"
 	fi
 
@@ -78,8 +80,10 @@ while true; do
 			fi
 		done
 		if [ "$EXIT_ON_FAIL" = "true" ]; then
-			exit
+			exit $RET
 		fi
 	fi
 	let i=$i+1
 done
+
+exit 0
