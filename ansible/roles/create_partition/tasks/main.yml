@@ -1,4 +1,14 @@
 ---
+- name: Verify / fix permission settings on {{ disk_setup_path }}
+  become: yes
+  become_method: sudo
+  file:
+    state: directory
+    path: "{{ disk_setup_path }}"
+    owner: "{{ disk_setup_user }}"
+    group: "{{ disk_setup_group }}"
+  tags: [ 'partition' ]
+
 - name: Check if {{ disk_setup_path }} is mounted
   become: yes
   become_method: sudo
@@ -71,16 +81,6 @@
     part_mounts_item[0] is not defined and
     part_mounts_item[1] is not defined
   register: create_data_fs
-  tags: [ 'partition' ]
-
-- name: Ensure directory {{ disk_setup_path }} is created and with correct permissions
-  become: yes
-  become_method: sudo
-  file:
-    state: directory
-    path: "{{ disk_setup_path }}"
-    owner: "{{ disk_setup_user }}"
-    group: "{{ disk_setup_group }}"
   tags: [ 'partition' ]
 
 - name: Mount data filesystem iff {{ disk_setup_path }} is not mounted
