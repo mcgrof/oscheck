@@ -222,7 +222,7 @@ generic/383
 generic/384
 generic/385
 generic/386
-generic/388
+generic/388 # kz#204049 kz#204223
 generic/389
 generic/390
 generic/391

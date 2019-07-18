@@ -2,6 +2,7 @@ generic/091
 generic/228
 generic/263
 generic/270 # after ~5 runs
+generic/388 # crashes after ~2 runs kz#204223
 generic/394
 generic/464 # after ~1 run
 generic/475 # after ~5 runs
