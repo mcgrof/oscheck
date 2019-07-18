@@ -67,6 +67,7 @@ generic/554
 generic/557
 shared/002
 shared/298
+xfs/008 # after ~115 runs
 xfs/030
 xfs/033
 xfs/045
