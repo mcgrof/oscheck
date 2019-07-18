@@ -103,6 +103,7 @@
       - fio
       - dbench
       - libcap2-bin
+      - libtool
     state: present
     update_cache: yes
   tags: [ 'fstests', 'deps' ]
