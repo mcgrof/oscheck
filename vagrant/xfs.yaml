@@ -64,6 +64,8 @@ vagrant_boxes:
     ip: 172.17.8.106
   - name: oscheck-xfs-realtimedev
     ip: 172.17.8.107
+  - name: oscheck-xfs-reflink-normapbt
+    ip: 172.17.8.108
   - name: oscheck-xfs-dev
     ip: 172.17.8.111
   - name: oscheck-xfs-nocrc-dev
@@ -78,6 +80,8 @@ vagrant_boxes:
     ip: 172.17.8.116
   - name: oscheck-xfs-realtimedev-dev
     ip: 172.17.8.117
+  - name: oscheck-xfs-reflink-normapbt-dev
+    ip: 172.17.8.118
 
 ansible_playbooks:
   # If this file exists you can override any ansible variable there.
