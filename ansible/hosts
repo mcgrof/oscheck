@@ -6,6 +6,7 @@ oscheck-xfs-reflink
 oscheck-xfs-reflink-1024
 oscheck-xfs-logdev
 oscheck-xfs-realtimedev
+oscheck-xfs-reflink-normapbt
 oscheck-xfs-dev
 oscheck-xfs-nocrc-dev
 oscheck-xfs-nocrc-512-dev
@@ -13,6 +14,7 @@ oscheck-xfs-reflink-dev
 oscheck-xfs-reflink-1024-dev
 oscheck-xfs-logdev-dev
 oscheck-xfs-realtimedev-dev
+oscheck-xfs-reflink-normapbt-dev
 [baseline]
 oscheck-xfs
 oscheck-xfs-nocrc
@@ -21,6 +23,7 @@ oscheck-xfs-reflink
 oscheck-xfs-reflink-1024
 oscheck-xfs-logdev
 oscheck-xfs-realtimedev
+oscheck-xfs-reflink-normapbt
 [dev]
 oscheck-xfs-dev
 oscheck-xfs-nocrc-dev
@@ -29,3 +32,7 @@ oscheck-xfs-reflink-dev
 oscheck-xfs-reflink-1024-dev
 oscheck-xfs-logdev-dev
 oscheck-xfs-realtimedev-dev
+oscheck-xfs-reflink-normapbt-dev
+[normap]
+oscheck-xfs-reflink-normapbt
+oscheck-xfs-reflink-normapbt-dev
