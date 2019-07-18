@@ -8,6 +8,7 @@
 
 - include_role:
     name: create_data_partition
+  tags: [ 'oscheck', 'data_partition' ]
 
 - name: Create {{ truncated_path }} if needed
   include_role:
@@ -20,6 +21,7 @@
     disk_setup_path: "{{ truncated_path }}"
     disk_setup_user: "{{ data_user }}"
     disk_setup_group: "{{ data_group }}"
+  tags: [ 'oscheck', 'truncated_partition' ]
 
 - name: git clone oscheck
   git:
