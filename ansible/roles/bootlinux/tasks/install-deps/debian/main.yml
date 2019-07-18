@@ -35,5 +35,6 @@
       - sed
       - libssl-dev
       - libelf-dev
+      - xfsprogs
     state: present
   tags: linux
