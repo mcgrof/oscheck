@@ -37,15 +37,19 @@ There are seven parts to the long terms ideals for oscheck:
 7. Updating expunge lists to detect regressions
 
 Vagrant or terraform can optionally be used for the first part. Vagrant and
-terraform are also used to kick off ansible later for the second part of the
-provisioning, to get all requirements installed, then to build and install
-oscheck and fstests.
+terraform are also used to kick off ansible basic machine configuration.
+The expectation is that you stop using these utilities, vagrant or terraform,
+after this step. After this you can use ansible for the later goals.
+
+You then use ansible directly to get oscheck, requirements, build and install
+it, along with partition setup for the systems.
 
 Since oscheck has its own set of expunge lists, it is then used to let you run
-fstests as easily as possible. By default it should in theory never crash *iff*
-the distro you are testing has the respective expunge files set for the
-filesystem you are testing. This should let you run fstests against a custom
-kernel, for example, to ensure you don't introduce regressions for changes.
+fstests as easily as possible against the target test guests you have just
+created. By default it should in theory never crash *iff* the distro you are
+testing has the respective expunge files set for the filesystem you are
+testing. This should let you run fstests against a custom kernel, for example,
+to ensure you don't introduce regressions for changes.
 
 Collecting results is next. oscheck uses xunit output files, but also processes
 test `*.bad` files to determine where issues are found. A summary of results
@@ -53,7 +57,7 @@ by looking at xunit files for all sections run can be found in the file
 `ansible/xunit_results.txt`. A summary of results by looking at all `*.bad`
 files can be found on `bad_results.txt`.
 
-The last step is to update the expunge list for you kernel, this done
+The last step is to update the expunge list for your kernel, this done
 automatically, so at the end of the `copy_results` tag for ansible you'd
 end able to just run the following command to determine if you have found
 regressions on the kernel you are testing:
@@ -139,18 +143,32 @@ The following Operating Systems are supported:
   * OS X
   * Linux
 
+The effort for using vagrant and terraform are now their own independent
+project, [kdevops](https://gitlab.com/mcgrof/kdevops), since that effort is
+very generic. This project shares code with that project for now for vagrant /
+terraform and a the few of the core ansible roles which are shared.
+
+For now a commit is done there and then merged here transparently as the
+file structure is shared. In the future how code is shared may change
+and is yet to be determined.
+
 #### Provisioning with vagrant for oscheck
 
 If on Linux we'll assume you are using KVM. If OS X we'll assume you are using
 Virtualbox. If these assumptions are incorrect you can override on the
-filesystem configuration file of your choise. If using xfs, for example,
-you'd edit vagrant/xfs.yaml and set the force_provider variable to either
-"libvirt" or "kvm"
+filesystem configuration file of your choise. To override the provider
+set the environment variable `OSCHECK_VAGRANT_PROVIDER` with either
+`virtualbox` or `libvirt`.
 
 You are responsible for having a pretty recent system with some fresh
 libvirt, or vitualbox installed. For instance, a virtualbox which supports
 nvme. By default additional sparse files are used for the target disks
 which will be used for testing fstests.
+
+You are expected to be able to use oshceck as a regular user, no root
+access is required. To use libvirt as a regular user refer to the
+documentation on [kdevops](https://gitlab.com/mcgrof/kdevops) about
+how to accomplish this.
 
 ```bash
 cd vagrant/
@@ -236,27 +254,73 @@ ansible-playbook -i hosts bootlinux.yml
 
 Be sure you are using a correct configuration. YMMV.
 
-### Running oscheck
+### Ansible bootlinux role
 
-To run oscheck to test with fstests after you have provisioned your
-systmes and they are up and accessible via ssh:
+The bootlinux role is designed in [kdevops](https://gitlab.com/mcgrof/kdevops)
+to allow you to git clone linux, get its dependencies to build, check out
+a tag, apply a custom patch if needed, compile and install Linux. As well
+as all other management of kernels -- such as manual uninstalls of a
+specific kernel, updateing your grub for you.
 
-```bash
-cd ansible/
-ansible-playbook -i hosts oscheck.yml
-```
+Since this role is developed as a shared effort read the documentation for
+it and how to use in the [kdevops](https://gitlab.com/mcgrof/kdevops) page.
 
-Say you just want to run the tests again:
+### Ansible oscheck role
+
+When first using the ansible oscheck role you want to use it one step at a
+time. First try to manully call the oscheck role to limit it to only get
+the repositories needed, get deps, build and install things. If that
+succeeds, move on to the next step to limit the role to run oscheck.
+Then if that succeeds a second step can be to collect and interpret results.
+
+You can also further extend your hosts file to add more sections so that
+you can customize and limit the calls to a set of group of hosts. Refer
+to ansible/hosts file for an example set of groups.
+
+First chnage to the ansible directory:
 
 ```
 cd ansible
-ansible-playbook -i hosts --tags run_tests oscheck.yml
 ```
 
-Say you just want to collect result:
+For the first step to get the repositories needed, build and install them
+for a set of hosts:
 
 ```
-ansible-playbook -i hosts --tags collect_results oscheck.yml
+ansible-playbook -i hosts -l dev --tags deps,git,build,install oscheck.yml
+```
+
+If that went well to now run the tests:
+```
+
+ansible-playbook -i hosts -l dev --tags run_tests oscheck.yml
+```
+
+Note that the above may fail for a few hosts, this is indicative of a
+failure. This can mean a regression was found.
+
+To collect results:
+
+```
+ansible-playbook -i hosts -l dev --tags run_tests,copy_results oscheck.yml
+```
+
+Now to see regressions just run:
+
+```
+git diff
+```
+
+If the above cycle worked well you can run test and collect in one shot:
+
+```
+ansible-playbook -i hosts -l dev --tags copy_results oscheck.yml
+```
+
+To run all tasks:
+
+```bash
+ansible-playbook -i hosts oscheck.yml
 ```
 
 If you detect your nodes are hosed.. try to reset them on your hypervisor.
