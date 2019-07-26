@@ -170,6 +170,22 @@ access is required. To use libvirt as a regular user refer to the
 documentation on [kdevops](https://gitlab.com/mcgrof/kdevops) about
 how to accomplish this.
 
+Note that you will need to ensure the right group for the default
+user which qemu will be spawned for matches the configuration. The
+default group on oscheck is libvirt-qemu, as this is what is used
+on Debian. Fedora uses the qemu group. To verride you can set the
+environment variable:
+
+```
+export OSCHECK_VAGRANT_QEMU_GROUP=qemu
+```
+
+Read the [kdevops](https://gitlab.com/mcgrof/kdevops) documentaion about
+apparmor/selinux and configuring libvirt if you run into issues with
+permissions.
+
+To run vagrant:
+
 ```bash
 cd vagrant/
 vagrant up

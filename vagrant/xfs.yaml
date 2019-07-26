@@ -26,7 +26,9 @@ vagrant_global:
     machine_type: 'q35'
     nvme_disk_postfix: 'qcow2'
     nvme_disk_id_prefix: 'drv'
-    qemu_group: 'qemu'
+    # If on Fedora use set as environment variable the value:
+    # OSCHECK_VAGRANT_QEMU_GROUP=qemu
+    qemu_group: 'libvirt-qemu'
     # In case you use a development version of qemu
     # emulator_path: '/usr/local/bin/qemu-system-x86_64'
     emulator_path: '/usr/bin/qemu-system-x86_64'
