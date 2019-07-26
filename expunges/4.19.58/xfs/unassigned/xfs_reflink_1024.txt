@@ -19,6 +19,7 @@ xfs/191-input-validation
 xfs/278
 xfs/449
 xfs/451
+xfs/482 # after ~15 runs
 xfs/495
 xfs/499
 xfs/500
