@@ -76,7 +76,9 @@ What works:
 
   * Full vagrant provisioning
   * Initial terraform provisioning on different cloud providers
-  * Optionally allowing vagrant to also run oscheck to run a full fstests run
+  * Deploy bare bones requirements on systems
+  * If using vagrant, automatically update your ~/.ssh/config with the
+    provisioned set of hosts so you can then use ansible directly.
   * Running ansible to get any Linux git repo, using a tag, compiling Linux,
     and booting into it
   * Running ansible to install dependencies on debian
@@ -97,8 +99,11 @@ What's missing?
     ansible playbook relies on at least two nvme drives to be available. This
     should be possible to just modify the tag used for the target label we
     look for to set up the truncated files on top of.
-  * A way to automate getting your vagrant / cloud provider IP address to your
-    ssh config so we can later run with ansible
+  * A way to automate getting your cloud provider IP address to your
+    ssh config so we can later run with ansible. Refer to the ansible
+    role update_ssh_config_vagrant for how this was done with vagrant.
+    We just need this for terraform now, and this may require different roles
+    for each.
   * Provided you have a baseline and a development kernel with a set of
     of respective hosts, when a delta exists between a baseline kernel and
     a development kernel implies either regressions or that a fix was made.
