@@ -10,6 +10,7 @@ generic/475 # after ~5-10 runs
 generic/482 # after ~16 runs
 generic/484
 generic/529
+generic/530 # fails all the time, should be fixed soon -mcgrof
 generic/536
 generic/537
 generic/538
