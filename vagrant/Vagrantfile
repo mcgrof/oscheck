@@ -88,9 +88,9 @@ limit_boxes = global_data['limit_boxes'] == "yes" ? "yes" : "no"
 limit_boxes = ENV['OSCHECK_VAGRANT_LIMIT_BOXES'] == "yes" ? "yes" : limit_boxes
 
 limit_num_boxes = vagrant_boxes.count
-limit_num_boxes = vagrant_boxes.count
-limit_num_boxes = limit_boxes == "yes" && global_data['limit_num_boxes']  ? global_data['limit_num_boxes'] : limit_num_boxes
-limit_num_boxes = limit_boxes == "yes" && ENV['OSCHECK_VAGRANT_LIMIT_NUM_BOXES'] ? ENV['OSCHECK_VAGRANT_LIMIT_NUM_BOXES'] : limit_num_boxes
+limit_max_num_boxes = limit_num_boxes
+limit_num_boxes = limit_boxes == "yes" && global_data['limit_num_boxes']  ? [limit_max_num_boxes, global_data['limit_num_boxes']].min : limit_num_boxes
+limit_num_boxes = limit_boxes == "yes" && ENV['OSCHECK_VAGRANT_LIMIT_NUM_BOXES'] ? [limit_max_num_boxes, ENV['OSCHECK_VAGRANT_LIMIT_NUM_BOXES'].to_i].min : limit_num_boxes
 
 qemu_group = global_data['libvirt_cfg']['qemu_group']
 if ENV['OSCHECK_VAGRANT_QEMU_GROUP']
