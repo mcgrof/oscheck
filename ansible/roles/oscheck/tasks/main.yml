@@ -182,14 +182,20 @@
 - name: Print fstests results to xunit_results.txt on localhost
   local_action: "shell ./python/gen_results_summary --results_file result.xml  --print_section --output_file xunit_results.txt results"
   tags: [ 'oscheck', 'fstests', 'copy_results', 'print_results' ]
+  when:
+    - oscheck_run_tests == true
   run_once: true
 
 - name: Print fstests bad results to bad_results.txt on localhost
   local_action: "shell ./python/bad_files_summary.py xfs results > bad_results.txt"
   tags: [ 'oscheck', 'fstests', 'copy_results', 'print_results' ]
+  when:
+    - oscheck_run_tests == true
   run_once: true
 
 - name: Augment expunge list, just run git diff to see new failures found
   local_action: "shell ./python/augment_expunge_list.py {{ oscheck_fstyp }} results ../expunges/"
   tags: [ 'oscheck', 'fstests', 'copy_results', 'augment_expunge_list' ]
+  when:
+    - oscheck_run_tests == true
   run_once: true
