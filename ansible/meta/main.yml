@@ -1,7 +1,45 @@
 galaxy_info:
   author: Luis Chamberlain
-  description: oscheck ansible files
+  description: Test fstests
   license: GPLv2
   min_ansible_version: 2.7
-  galaxy_tags: []
+  platforms:
+  - name: Debian
+    versions:
+     - all
+  - name: Fedora
+    versions:
+     - all
+  - name: Ubuntu
+    versions:
+      - quantal
+      - saucy
+      - utopic
+      - vivid
+      - wily
+      - xenial
+      - yakkety
+      - artful
+      - zesty
+      - cosmic
+  - name: Alpine
+    versions:
+      - all
+  - name: Gentoo
+    versions:
+      - all
+  - name: opensuse
+    versions:
+      - all
+  - name: EL
+    versions:
+      - 6
+      - 7
+  - name: SLES
+    versions:
+      - 12
+      - 12SP1
+      - 15
+  galaxy_tags: [ linux, kernel, development, filesystems, fstests ]
+
 dependencies: []

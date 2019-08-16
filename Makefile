@@ -14,16 +14,34 @@ TARGET_CONFIG := $(FSTESTS_CONFIGS)/$(HOSTNAME_CONFIG)
 EXAMPLE_CONFIG := fstests-configs/$(FSTYP).config
 ID=$(shell id -u)
 
-.PHONY: all install deps
+.PHONY: all install deps ansible_deps vagrant-deps clean
 
 include globals.mk
 
 DIRS=$(shell find ./* -maxdepth 0 -type d)
 
+terraform-deps:
+	@ansible-playbook -i ansible/hosts ansible/kdevops_terraform.yml
+	@if [ -d terraform ]; then \
+		make -C terraform deps; \
+	fi
+
+vagrant-deps:
+	@ansible-playbook -i ansible/hosts ansible/kdevops_vagrant.yml
+
+ansible_deps:
+	@ansible-galaxy install -r requirements.yml
+
+
 all: $(PROGS)
 
-deps:
+deps: ansible_deps terraform-deps vagrant-deps
 	@for i in $(DIRS); do if [ -f $$i/Makefile ]; then $(MAKE) -C $$i deps; fi; done
+
+terraform-clean:
+	@if [ -d terraform ]; then \
+		make -C terraform clean ; \
+	fi
 
 install: $(PROGS)
 	@if [ $(ID) != "0" ]; then \
@@ -71,5 +89,5 @@ install: $(PROGS)
 	@echo To try to get oscheck to install fstests build dependencies run the following a few times:
 	@echo	$(FSTESTS)/oscheck.sh --install-deps
 
-clean:
+clean: terraform-clean
 	@for i in $(DIRS); do if [ -f $$i/Makefile ]; then $(MAKE) -C $$i clean; fi; done
