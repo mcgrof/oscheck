@@ -91,3 +91,4 @@ ansible_playbooks:
   playbooks:
     - name: "../ansible/update_ssh_config_vagrant.yml"
     - name: "../ansible/devconfig.yml"
+    - name: "../ansible/fix-dhcp-hack.yml"
