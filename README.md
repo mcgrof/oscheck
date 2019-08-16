@@ -14,14 +14,10 @@ The nuts and bolts of deploying vagrant / terraform / and ansible to
 get Linux through a git tree using a tag, compile Linux, and boot into
 that kernel are all things which can obviously be shared with other projects.
 As such this part of oscheck is now its own independent project,
-[kdevops](https://gitlab.com/mcgrof/kdevops). At this point in time this
-just means the vagrant / terraform directories are currently mirrored on
-both projects as-is, as well as the ansible roles for bootlinux and installing
-generic dependencies. A long term goal of kdevops is to eventually modularize
-it so that oscheck does not have to copy all of the code present on
-[kdevops](https://gitlab.com/mcgrof/kdevops). For now all commits which
-touch vagrant / terraform / the bootlinxu ansible role can be shared between
-projects.
+[kdevops](https://gitlab.com/mcgrof/kdevops).
+
+This project *shares* all components which other projects can benefit from
+through [kdevops](https://gitlab.com/mcgrof/kdevops).
 
 There are seven parts to the long terms ideals for oscheck:
 
