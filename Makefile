@@ -21,21 +21,27 @@ include globals.mk
 DIRS=$(shell find ./* -maxdepth 0 -type d)
 
 terraform-deps:
+	@ansible-playbook -i ansible/hosts ansible/install_terraform.yml
 	@ansible-playbook -i ansible/hosts ansible/kdevops_terraform.yml
 	@if [ -d terraform ]; then \
 		make -C terraform deps; \
 	fi
 
 vagrant-deps:
+	@ansible-playbook -i ansible/hosts ansible/install_vagrant.yml
+	@ansible-playbook -i ansible/hosts ansible/libvirt_user.yml
 	@ansible-playbook -i ansible/hosts ansible/kdevops_vagrant.yml
 
+verify-vagrant-user:
+	@ansible-playbook -i hosts ansible/libvirt_user.yml -e "only_verify_user=True"
+
 ansible_deps:
-	@ansible-galaxy install -r requirements.yml
+	@ansible-galaxy install --force -r requirements.yml
 
 
 all: $(PROGS)
 
-deps: ansible_deps terraform-deps vagrant-deps
+deps: ansible_deps terraform-deps vagrant-deps verify-vagrant-user
 	@for i in $(DIRS); do if [ -f $$i/Makefile ]; then $(MAKE) -C $$i deps; fi; done
 
 terraform-clean:
