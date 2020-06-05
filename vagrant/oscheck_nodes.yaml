@@ -1,7 +1,6 @@
 ---
 vagrant_global:
   box: "debian/buster64"
-  ssh_key: "~/.ssh/oscheck"
   memory: 8192
   cpus: 8
   # Enable the below options
@@ -23,12 +22,16 @@ vagrant_global:
     # support for this upstream to Virtualbox.
     nvme_controller_per_disk: false
   libvirt_cfg:
-    machine_type: 'q35'
     nvme_disk_postfix: 'qcow2'
     nvme_disk_id_prefix: 'drv'
     # If on Fedora use set as environment variable the value:
     # OSCHECK_VAGRANT_QEMU_GROUP=qemu
     qemu_group: 'libvirt-qemu'
+    # If enabled the above qemu_group will be inferred by default from
+    # certain heuristics on the Vagrantfile. This is enabled by default.
+    # To override you can use the environment variable: ${PN}_VAGRANT_QEMU_GROUP
+    # where PN is the project name in upper case.
+    qemu_group_auto: true
     # In case you use a development version of qemu
     # emulator_path: '/usr/local/bin/qemu-system-x86_64'
     emulator_path: '/usr/bin/qemu-system-x86_64'
@@ -91,4 +94,3 @@ ansible_playbooks:
   playbooks:
     - name: "../ansible/update_ssh_config_vagrant.yml"
     - name: "../ansible/devconfig.yml"
-    - name: "../ansible/fix-dhcp-hack.yml"
