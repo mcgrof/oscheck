@@ -1,6 +1,18 @@
 *.swp
 *.o
 
+# kdevops files
+Makefile.kdevops
+ansible/bootlinux.yml
+ansible/devconfig.yml
+ansible/install-vagrant-boxes.yml
+ansible/install_terraform.yml
+ansible/install_vagrant.yml
+ansible/kdevops_terraform.yml
+ansible/kdevops_vagrant.yml
+ansible/libvirt_user.yml
+ansible/update_ssh_config_vagrant.yml
+kdevops_requirements.yml
 terraform/Makefile
 terraform/aws/
 terraform/azure/
