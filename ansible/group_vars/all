@@ -29,4 +29,4 @@ truncated_fs_opts: "-L {{ truncated_label }}"
 make: "make"
 make_num_jobs: "$(nproc --all)"
 
-enable_dhcp_hack: true
+force_kdevops_playbook_dir: ''

@@ -14,40 +14,26 @@ TARGET_CONFIG := $(FSTESTS_CONFIGS)/$(HOSTNAME_CONFIG)
 EXAMPLE_CONFIG := fstests-configs/$(FSTYP).config
 ID=$(shell id -u)
 
-.PHONY: all install deps ansible_deps vagrant-deps clean
+export KDEVOPS_PLAYBOOKS_DIR :=		ansible
+export KDEVOPS_HOSTFILE :=		$(KDEVOPS_PLAYBOOKS_DIR)/hosts
+
+-include Makefile.kdevops
+.PHONY: all install deps clean
+
+deps: kdevops_install
+	$(MAKE) -f Makefile.kdevops kdevops_deps
+PHONY := deps
+
+kdevops_install:
+	@ansible-galaxy install --force -r requirements.yml
+	@ansible-playbook -i $(KDEVOPS_HOSTFILE) $(KDEVOPS_PLAYBOOKS_DIR)/kdevops_install.yml
+PHONY += kdevops_install
 
 include globals.mk
 
 DIRS=$(shell find ./* -maxdepth 0 -type d)
 
-terraform-deps:
-	@ansible-playbook -i ansible/hosts ansible/install_terraform.yml
-	@ansible-playbook -i ansible/hosts ansible/kdevops_terraform.yml
-	@if [ -d terraform ]; then \
-		make -C terraform deps; \
-	fi
-
-vagrant-deps:
-	@ansible-playbook -i ansible/hosts ansible/install_vagrant.yml
-	@ansible-playbook -i ansible/hosts ansible/libvirt_user.yml
-	@ansible-playbook -i ansible/hosts ansible/kdevops_vagrant.yml
-
-verify-vagrant-user:
-	@ansible-playbook -i hosts ansible/libvirt_user.yml -e "only_verify_user=True"
-
-ansible_deps:
-	@ansible-galaxy install --force -r requirements.yml
-
-
 all: $(PROGS)
-
-deps: ansible_deps terraform-deps vagrant-deps verify-vagrant-user
-	@for i in $(DIRS); do if [ -f $$i/Makefile ]; then $(MAKE) -C $$i deps; fi; done
-
-terraform-clean:
-	@if [ -d terraform ]; then \
-		make -C terraform clean ; \
-	fi
 
 install: $(PROGS)
 	@if [ $(ID) != "0" ]; then \
@@ -95,5 +81,7 @@ install: $(PROGS)
 	@echo To try to get oscheck to install fstests build dependencies run the following a few times:
 	@echo	$(FSTESTS)/oscheck.sh --install-deps
 
-clean: terraform-clean
+clean: kdevops_clean
 	@for i in $(DIRS); do if [ -f $$i/Makefile ]; then $(MAKE) -C $$i clean; fi; done
+
+.PHONY: $(PHONY)
