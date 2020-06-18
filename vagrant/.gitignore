@@ -1,2 +1,3 @@
+oscheck_nodes_override.yaml
 .vagrant
 *.img

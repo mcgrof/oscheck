@@ -15,6 +15,9 @@ oscheck-xfs-reflink-1024-dev
 oscheck-xfs-logdev-dev
 oscheck-xfs-realtimedev-dev
 oscheck-xfs-reflink-normapbt-dev
+[all:vars]
+ansible_python_interpreter =  "/usr/bin/python3"
+
 [baseline]
 oscheck-xfs
 oscheck-xfs-nocrc
@@ -24,6 +27,9 @@ oscheck-xfs-reflink-1024
 oscheck-xfs-logdev
 oscheck-xfs-realtimedev
 oscheck-xfs-reflink-normapbt
+[baseline:vars]
+ansible_python_interpreter =  "/usr/bin/python3"
+
 [dev]
 oscheck-xfs-dev
 oscheck-xfs-nocrc-dev
@@ -33,6 +39,11 @@ oscheck-xfs-reflink-1024-dev
 oscheck-xfs-logdev-dev
 oscheck-xfs-realtimedev-dev
 oscheck-xfs-reflink-normapbt-dev
+[dev:vars]
+ansible_python_interpreter =  "/usr/bin/python3"
+
 [normap]
 oscheck-xfs-reflink-normapbt
 oscheck-xfs-reflink-normapbt-dev
+[normap:vars]
+ansible_python_interpreter =  "/usr/bin/python3"

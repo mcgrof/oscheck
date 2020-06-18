@@ -1,5 +1,6 @@
 ---
 vagrant_global:
+  ansible_python_interpreter: "/usr/bin/python3"
   box: "debian/buster64"
   memory: 8192
   cpus: 8
